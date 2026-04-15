@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import os
 
-from ai_sorter import sort_notes
+from backend.ai_sorter import sort_notes
 
 app = FastAPI()
 
