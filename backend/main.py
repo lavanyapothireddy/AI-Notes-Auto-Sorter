@@ -8,7 +8,7 @@ from backend.ai_sorter import sort_notes
 
 app = FastAPI()
 
-# ✅ Enable CORS (important for frontend connection)
+# ✅ Enable CORS (needed for frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,11 +17,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Request model
+# ✅ Input model
 class NotesInput(BaseModel):
     notes: list[str]
 
-# ✅ Health check (important for testing + deployment)
+# ✅ Health check (VERY IMPORTANT for Render)
 @app.get("/status")
 def status():
     return {"message": "🚀 AI Notes Auto-Sorter is running"}
@@ -35,4 +35,13 @@ def sort_user_notes(data: NotesInput):
     except Exception as e:
         return {"sorted_notes": {}, "error": str(e)}
 
-
+# ✅ Serve frontend (index.html)
+@app.get("/")
+def home():
+    file_path = os.path.join(os.path.dirname(__file__), "..", "index.html")
+    
+    # fallback safety
+    if not os.path.exists(file_path):
+        return {"message": "Frontend not found, but API is running 🚀"}
+    
+    return FileResponse(file_path)
