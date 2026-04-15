@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Notes Auto-Sorter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+    <h1>🧠 AI Notes Auto-Sorter</h1>
+
+    <div class="card">
+        <textarea id="notes" placeholder="Enter notes (one per line)..."></textarea>
+
+        <div class="buttons">
+            <button onclick="sortNotes()">✨ Sort Notes</button>
+            <button onclick="loadExample()">📄 Example</button>
+            <button onclick="downloadJSON()">⬇ Download</button>
+        </div>
+    </div>
+
+    <div id="loading" class="loading hidden">⏳ Processing...</div>
+    <div id="output" class="output"></div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
