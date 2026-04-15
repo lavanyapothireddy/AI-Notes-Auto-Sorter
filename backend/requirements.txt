@@ -1,6 +1,7 @@
 fastapi
 uvicorn
-sentence-transformers==2.2.2
-scikit-learn
 numpy
+scikit-learn
+sentence-transformers==2.2.2
+huggingface_hub==0.14.1
 torch --index-url https://download.pytorch.org/whl/cpu
