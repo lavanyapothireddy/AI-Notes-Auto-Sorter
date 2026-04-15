@@ -35,8 +35,4 @@ def sort_user_notes(data: NotesInput):
     except Exception as e:
         return {"sorted_notes": {}, "error": str(e)}
 
-# ✅ Serve frontend
-@app.get("/")
-def home():
-    file_path = os.path.join(os.path.dirname(__file__), "..", "index.html")
-    return FileResponse(file_path)
+
