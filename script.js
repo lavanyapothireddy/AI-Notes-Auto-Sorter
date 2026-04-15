@@ -4,57 +4,51 @@ async function sortNotes() {
         .map(n => n.trim())
         .filter(n => n !== "");
 
-    document.getElementById("loading").classList.remove("hidden");
-    document.getElementById("output").innerHTML = "";
+    let loading = document.getElementById("loading");
+    let output = document.getElementById("output");
+
+    loading.classList.remove("hidden");
+    loading.innerText = "⏳ Processing...";
+    output.innerHTML = "";
+
+    // 🔥 Message after delay (Render wake-up)
+    let delayMsg = setTimeout(() => {
+        loading.innerText = "⏳ First request may take 1-2 minutes...";
+    }, 5000);
 
     try {
-        let res = await fetch("/sort-notes", {
+        let res = await fetch("https://ai-notes-auto-sorter.onrender.com/sort-notes", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ notes })
         });
 
-        let data = await res.json();
+        // ❌ Handle bad response
+        if (!res.ok) {
+            throw new Error("Server error: " + res.status);
+        }
 
-        document.getElementById("loading").classList.add("hidden");
+        let text = await res.text();
 
-        display(data.sorted_notes);
+        // ❌ Handle empty response
+        if (!text) {
+            throw new Error("Empty response from server");
+        }
+
+        let data = JSON.parse(text);
+
+        clearTimeout(delayMsg);
+        loading.classList.add("hidden");
+
+        if (data.sorted_notes) {
+            display(data.sorted_notes);
+        } else {
+            output.innerText = "No data received";
+        }
 
     } catch (e) {
-        document.getElementById("output").innerText = "Error: " + e;
+        clearTimeout(delayMsg);
+        loading.classList.add("hidden");
+        output.innerText = "❌ Error: " + e.message;
     }
-}
-
-function display(data) {
-    let output = document.getElementById("output");
-
-    for (let cat in data) {
-        let div = document.createElement("div");
-        div.className = "category";
-
-        div.innerHTML = `<h3>📌 ${cat}</h3>`;
-
-        data[cat].forEach(n => {
-            div.innerHTML += `<p>• ${n}</p>`;
-        });
-
-        output.appendChild(div);
-    }
-}
-
-function loadExample() {
-    document.getElementById("notes").value =
-`iot sensors and actuators
-esp32 microcontroller
-binary tree traversal
-quick sort algorithm`;
-}
-
-function downloadJSON() {
-    let text = document.getElementById("output").innerText;
-    let blob = new Blob([text], {type: "application/json"});
-    let a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "notes.json";
-    a.click();
 }
